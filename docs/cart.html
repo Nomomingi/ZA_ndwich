@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart Page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<link rel="icon" type="image/jpeg" href="../Media/sandwich-simple-doodle-illustration-vector.jpg">
+<link rel="apple-touch-icon" href="../Media/sandwich-simple-doodle-illustration-vector.jpg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="navigation-bar">
+    <p class="navigation-bar-date">Est. 2026 · Cape Town, South Africa · Vol. I</p>
+    <h1 class="navigation-bar-title">Your Cart</h1>
+    <p class="navigation-bar-tagline">Review the items ready for delivery.</p>
+    <hr class="navigation-bar-rule">
+  </div>
+  <nav class="site-nav">
+    <div class="nav-brand">
+      <a href="home.html" class="brand-link" aria-label="Go to home page">
+        <img class="site-logo" src="../Media/sandwich-simple-doodle-illustration-vector.jpg" alt="ZAndwich logo" loading="eager">
+        <span class="site-name">ZAndwich</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="home.html">Home</a>
+      <span class="nav-divider">|</span>
+      <a href="shop.html">Shop</a>
+      <span class="nav-divider">|</span>
+      <a href="recipes.html">Recipes</a>
+      <span class="nav-divider">|</span>
+      <a href="about.html">About</a>
+      <span class="nav-divider">|</span>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <a href="cart.html" class="nav-icon" aria-label="View cart">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM6 6h2l1.68 5.1c.14.43.54.73.99.73h7.66c.55 0 1-.45 1-1s-.45-1-1-1H11.1l-.29-.9L9.88 6H6zM5 4h14v2H5V4z"/></svg>
+        <span class="cart-badge">0</span>
+      </a>
+      <a href="wishlist.html" class="nav-icon nav-icon-wishlist" aria-label="Wishlist">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09A5.93 5.93 0 0 1 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      </a>
+      <a href="profile.html" class="nav-icon" aria-label="User profile">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z"/></svg>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<main class="products-area">
+
+  <!-- EMPTY STATE -->
+  <div id="cart-empty" class="cart-empty is-hidden">
+    <div class="section-header">
+      <span class="section-title">Your basket is empty</span>
+      <div class="section-rule"></div>
+    </div>
+    <p class="cart-empty-msg">Nothing in the basket yet. Head to the market and pick something up.</p>
+    <a href="shop.html" class="btn-primary">Browse the Market</a>
+  </div>
+  <!-- END OF EMPTY STATE -->
+
+  <!-- CART ITEMS -->
+  <div id="cart-summary" class="is-hidden">
+    <div class="section-header">
+      <span class="section-title">Cart Summary</span>
+      <div class="section-rule"></div>
+    </div>
+    <div id="cart-items" class="cart-items-list"></div>
+    <div class="cart-totals-group">
+      <div class="cart-totals">
+        <span class="cart-total-label">Subtotal (excl. VAT)</span>
+        <span class="cart-total-amount" id="cart-subtotal">R0.00</span>
+      </div>
+      <div class="cart-totals cart-totals-secondary">
+        <span class="cart-total-label">VAT (15%)</span>
+        <span class="cart-total-amount cart-total-amount-sm" id="cart-vat">R0.00</span>
+      </div>
+      <div class="cart-totals cart-totals-primary">
+        <span class="cart-total-label">Total (incl. VAT)</span>
+        <span class="cart-total-amount" id="cart-total">R0.00</span>
+      </div>
+    </div>
+    <div class="cart-cta-row">
+      <a href="checkout.html" class="btn-primary cart-checkout-link">Proceed to Checkout</a>
+      <a href="shop.html" class="btn-order cart-continue">Continue Shopping</a>
+      <button id="cart-clear" class="btn-secondary" type="button">Remove All</button>
+    </div>
+  </div>
+  <!-- END OF CART ITEMS -->
+
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col">
+      <p class="footer-col-title">About ZAndwich</p>
+      <p>Established in 2026, we believe in advancing food literacy at an affordable cost in South Africa.</p>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Contact</p>
+      <address>
+        Email: hello@zandwich.co.za<br>
+        Phone: 021 555 0123<br>
+        Cape Town, South Africa
+      </address>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Follow Us</p>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3.5A4.5 4.5 0 1 0 16.5 12 4.5 4.5 0 0 0 12 7.5zm0 2A2.5 2.5 0 1 1 14.5 12 2.5 2.5 0 0 1 12 9.5zm4.75-3.75a1.25 1.25 0 1 0 1.25 1.25 1.25 1.25 0 0 0-1.25-1.25z"/></svg>
+          Instagram
+        </a>
+        <a href="#" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 8H15V5.25A22.5 22.5 0 0 0 12 5C9.79 5 8 6.5 8 9.25V11H6.5v3H8v8h3.5v-8h2.33l.67-3H11.5V9.25c0-.66.34-1.25 1-1.25z"/></svg>
+          Facebook
+        </a>
+        <a href="#" aria-label="Twitter">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22.46 6c-.77.35-1.6.58-2.46.69a4.27 4.27 0 0 0 1.88-2.36 8.56 8.56 0 0 1-2.7 1.03 4.26 4.26 0 0 0-7.26 3.88A12.1 12.1 0 0 1 3.15 4.7a4.25 4.25 0 0 0 1.32 5.68 4.2 4.2 0 0 1-1.93-.53v.05a4.25 4.25 0 0 0 3.42 4.17 4.29 4.29 0 0 1-1.92.07 4.26 4.26 0 0 0 3.98 2.96A8.56 8.56 0 0 1 2 19.54 12.06 12.06 0 0 0 8.29 21c7.55 0 11.68-6.26 11.68-11.68 0-.18 0-.36-.01-.54A8.33 8.33 0 0 0 22.46 6z"/></svg>
+          Twitter
+        </a>
+        <a href="#" aria-label="Reddit">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a4 4 0 0 0-6.4-3.2 32.3 32.3 0 0 0-3-.8l.9-3.1 2.7.6a2 2 0 1 0 .3-1.3l-3.1-.7a.7.7 0 0 0-.8.5l-1 3.6a17 17 0 0 0-3.2.8A4 4 0 1 0 2 12a4 4 0 0 0 1.3 3A6.7 6.7 0 0 0 7 20.3a10.6 10.6 0 0 0 5 1.2 10.8 10.8 0 0 0 5-1.2 6.7 6.7 0 0 0 3.7-5.3A4 4 0 0 0 22 12zM8.7 13.5A1.2 1.2 0 1 1 10 12.3a1.2 1.2 0 0 1-1.3 1.2zm6.6 0a1.2 1.2 0 1 1 1.3-1.2 1.2 1.2 0 0 1-1.3 1.2zM12 18.9c-1.6 0-3-.5-3.7-1.3a.7.7 0 1 1 1-1c.5.5 1.5.9 2.7.9s2.2-.4 2.7-.9a.7.7 0 0 1 1 1c-.8.8-2.1 1.3-3.7 1.3z"/></svg>
+          Reddit
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-bottom-name">ZAndwich</p>
+    <p class="footer-bottom-copy">&copy; 2026 All Rights Reserved</p>
+  </div>
+</footer>
+
+<script src="scripts/cart.js"></script>
+<script src="scripts/nav.js"></script>
+</body>
+</html>
+
+
+
+
+
+

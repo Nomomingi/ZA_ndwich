@@ -1,0 +1,39 @@
+[
+    {
+        "username": "pinga",
+        "password": "a2lsbDdiaWxsaW9ucGVvcGxlCg==",
+        "role": "admin", 
+        "phoneNumber": "1234567890",
+        "budget": 1000,
+        "addresses": [
+            {
+                "street": "123 Main St",
+                "city": "Anytown",
+                "state": "CA",
+                "zipCode": "12345"
+            }
+        ],
+        "orders": [
+            {
+                "orderId": "ORD123456",
+                "date": "2024-06-01",
+                "items": [
+                    {
+                        "productId": "PROD001",
+                        "name": "Classic Sandwich",
+                        "quantity": 2,
+                        "price": 5.99
+                    },
+                    {
+                        "productId": "PROD002",
+                        "name": "Veggie Wrap",
+                        "quantity": 1,
+                        "price": 6.49
+                    }
+                ],
+                "totalAmount": 18.47,
+                "status": "Delivered"
+            }
+        ]
+    }
+]

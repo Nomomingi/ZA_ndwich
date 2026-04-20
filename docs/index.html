@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZAndwich | Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/jpeg" href="../Media/sandwich-simple-doodle-illustration-vector.jpg">
+  <link rel="apple-touch-icon" href="../Media/sandwich-simple-doodle-illustration-vector.jpg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="landing-page">
+  <header class="landing-header">
+    <div class="landing-container landing-header__inner">
+      <a href="home.html" class="landing-brand" aria-label="Go to home page">
+        <img class="site-logo site-logo--landing" src="../Media/sandwich-simple-doodle-illustration-vector.jpg" alt="ZAndwich logo" loading="eager">
+        <span class="landing-brand__wordmark">ZAndwich</span>
+      </a>
+      <div class="landing-header__auth">
+        <span class="landing-header__question">Have an account?</span>
+        <a href="profile.html?mode=register" class="btn-primary">Sign Up</a>
+        <a href="profile.html?mode=login" class="btn-secondary">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="landing-section landing-hero-section">
+      <div class="landing-container">
+        <div class="split-hero">
+          <div class="split-hero__content">
+            <p class="split-hero__eyebrow" id="landing-date">Monday, April 20, 2026</p>
+            <h1 class="split-hero__title">Shop the specials. Plan the dinner. Beat the budget.</h1>
+            <p class="split-hero__lede">ZAndwich helps South African shoppers compare price, reduce choice paralysis, and turn market offers into meals that fit the week’s budget.</p>
+            <div class="split-hero__actions">
+              <a href="shop.html?specials=1" class="btn-primary">Browse Today's Specials</a>
+              <a href="recipes.html" class="btn-secondary">Plan a Meal</a>
+            </div>
+          </div>
+          <div class="split-hero__media">
+            <img src="../Media/portrait-young-latin-couple-cooking-together-kitchen-home_58466-15643.avif" alt="A couple cooking together in a kitchen" loading="eager">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section landing-features-section">
+      <div class="landing-container">
+        <div class="section-intro">
+          <p class="section-intro__eyebrow">Core Tools</p>
+          <h2 class="section-intro__title">Built around food literacy, budgeting, and action.</h2>
+          <p class="section-intro__lede">A practical shopping workflow for South African consumers who want to see value quickly and turn market offers into meals.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card feature-card--green">
+            <span class="feature-card__index">01</span>
+            <h3>Clear Market Pricing</h3>
+            <p>See every item against its base value, with the 75% discount view surfaced clearly so the best deal is obvious.</p>
+          </article>
+          <article class="feature-card feature-card--orange">
+            <span class="feature-card__index">02</span>
+            <h3>Ingredient-First Planning</h3>
+            <p>Use the recipe engine to turn today’s market offers into a meal plan that starts with what is actually affordable.</p>
+          </article>
+          <article class="feature-card feature-card--gold">
+            <span class="feature-card__index">03</span>
+            <h3>Actionable Shopping Lists</h3>
+            <p>Move from recipe ideas to a ready-to-shop list so buying, budgeting, and cooking happen in one flow.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section landing-specials-section">
+      <div class="landing-container">
+        <div class="section-intro section-intro--split">
+          <div>
+            <p class="section-intro__eyebrow">Today on Special</p>
+            <h2 class="section-intro__title">A market preview you can scan in seconds.</h2>
+          </div>
+          <p class="section-intro__lede"></p>
+        </div>
+        <div class="specials-rail" id="landing-specials-rail" aria-label="Today on special" aria-live="polite">
+          <p class="shop-error">Loading specials...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="landing-footer">
+    <div class="landing-container">
+      <div class="landing-footer__grid">
+        <div class="landing-footer__column">
+          <h3>Our Mission</h3>
+          <p>Established in 2026, we believe in advancing food literacy at an affordable cost in South Africa.</p>
+        </div>
+        <nav class="landing-footer__column" aria-label="Quick links">
+          <h3>Quick Links</h3>
+          <a href="shop.html?specials=1">Products</a>
+          <a href="recipes.html">Recipes</a>
+          <a href="profile.html">Budget Tools</a>
+        </nav>
+        <div class="landing-footer__column">
+          <h3>Contact</h3>
+          <a href="mailto:hello@zandwich.co.za">hello@zandwich.co.za</a>
+          <p>Cape Town, South Africa</p>
+        </div>
+      </div>
+      <div class="landing-footer__base">
+        <p>© 2026 ZAndwich</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="scripts/data-utils.js"></script>
+  <script>
+    (function () {
+      const dateElement = document.getElementById('landing-date');
+
+      if (dateElement) {
+        const formatted = new Intl.DateTimeFormat('en-US', {
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        }).format(new Date());
+
+        dateElement.textContent = formatted;
+      }
+
+      const specialsRail = document.getElementById('landing-specials-rail');
+      if (!specialsRail) return;
+
+      const escapeHtml = value => String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+      function hydrateSpecialImages(scope) {
+        scope.querySelectorAll('.product-card-img[data-image-url]').forEach(container => {
+          const imageUrl = (container.dataset.imageUrl || '').trim();
+          const imageAlt = (container.dataset.imageAlt || 'Product image').trim();
+          const errorLabel = container.querySelector('.product-image-error');
+          if (errorLabel) errorLabel.classList.add('is-hidden');
+
+          if (!imageUrl) {
+            const label = container.querySelector('.product-card-img-label');
+            if (label) label.classList.add('is-hidden');
+            if (errorLabel) errorLabel.classList.remove('is-hidden');
+            return;
+          }
+
+          if (container.querySelector('img')) return;
+
+          const img = document.createElement('img');
+          img.src = imageUrl;
+          img.alt = imageAlt;
+          img.addEventListener('load', () => {
+            const label = container.querySelector('.product-card-img-label');
+            if (label) label.classList.add('is-hidden');
+          });
+          img.addEventListener('error', () => {
+            const label = container.querySelector('.product-card-img-label');
+            if (label) label.classList.add('is-hidden');
+            if (errorLabel) errorLabel.classList.remove('is-hidden');
+          });
+          container.prepend(img);
+        });
+      }
+
+      async function loadSpecials() {
+        try {
+          const response = await fetch('scripts/products.JSON');
+          if (!response.ok) throw new Error('Failed to load products.');
+
+          const rawProducts = await response.json();
+          const normalizedProducts = Array.isArray(rawProducts)
+            ? rawProducts.map(product => window.ZDataUtils?.normalizeProductData ? window.ZDataUtils.normalizeProductData(product) : product)
+            : [];
+
+          const specials = normalizedProducts
+            .filter(product => product && product.available !== false && product.special)
+            .sort((a, b) => {
+              const aSaving = Number(a.compareAtPrice || 0) - Number(a.price || 0);
+              const bSaving = Number(b.compareAtPrice || 0) - Number(b.price || 0);
+              return bSaving - aSaving || String(a.name || '').localeCompare(String(b.name || ''));
+            })
+            .slice(0, 4);
+
+          if (!specials.length) {
+            specialsRail.innerHTML = '<p class="shop-error">No specials available right now.</p>';
+            return;
+          }
+
+          specialsRail.innerHTML = specials.map(product => {
+            const priceMarkup = window.ZDataUtils?.renderPriceMarkup
+              ? window.ZDataUtils.renderPriceMarkup(product)
+              : `<span class="product-card-price">R${Number(product.price || 0).toFixed(2)}</span>`;
+
+            return `
+              <article class="product-card landing-special-card">
+                <a href="product.html?id=${encodeURIComponent(product.id)}" class="product-card-link" aria-label="View ${escapeHtml(product.name)}">
+                  <div class="product-card-img" data-image-url="${escapeHtml(product.img || '')}" data-image-alt="${escapeHtml(product.name)}">
+                    ${window.ZDataUtils?.renderDiscountBadge ? window.ZDataUtils.renderDiscountBadge(product) : ''}
+                    <span class="product-card-img-label">[IMG]</span>
+                    <span class="product-image-error is-hidden">There's something wrong with this image.</span>
+                  </div>
+                  <div class="product-card-body">
+                    <span class="product-card-name">${escapeHtml(product.name)}</span>
+                    <span class="product-card-qty">${escapeHtml(product.unit || `${product.weight || 0}g`)}</span>
+                    ${priceMarkup}
+                  </div>
+                </a>
+              </article>
+            `;
+          }).join('');
+
+          hydrateSpecialImages(specialsRail);
+        } catch (error) {
+          console.error(error);
+          specialsRail.innerHTML = '<p class="shop-error">Could not load special offers.</p>';
+        }
+      }
+
+      loadSpecials();
+    })();
+  </script>
+</body>
+</html>
