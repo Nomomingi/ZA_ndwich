@@ -103,7 +103,7 @@
 
   async function loadProducts() {
     // product.html lives in docs/, JSON lives in docs/scripts/
-    // API first, file fallback for local demos.
+    // API first, file fallback for local development.
     try {
       if (window.ZAndwichApi?.fetchJson) {
         return await window.ZAndwichApi.fetchJson('products');

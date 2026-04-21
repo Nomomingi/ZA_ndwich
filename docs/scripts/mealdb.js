@@ -6,6 +6,9 @@ const KEYWORD_STOP_WORDS = new Set([
   'meal', 'powder', 'stock', 'cubes', 'cube', 'oil', 'sauce', 'plain'
 ]);
 
+const RECIPES_CACHE_KEY = 'zandwich-cache-recipes';
+const PRODUCTS_CACHE_KEY = 'zandwich-cache-products';
+
 let recipeCache = null;
 
 function escapeHtml(value) {
@@ -31,6 +34,25 @@ function singularize(token) {
   if (token.endsWith('ies') && token.length > 4) return `${token.slice(0, -3)}y`;
   if (token.endsWith('s') && token.length > 3) return token.slice(0, -1);
   return token;
+}
+
+function readCachedArray(key) {
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function writeCachedArray(key, value) {
+  try {
+    if (Array.isArray(value)) {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    }
+  } catch (_) {}
 }
 
 function buildKeywordSet(product) {
@@ -117,6 +139,12 @@ function renderRecipe(recipe, productsList) {
 async function loadRecipeData() {
   if (Array.isArray(recipeCache)) return recipeCache;
 
+  const cachedRecipes = readCachedArray(RECIPES_CACHE_KEY);
+  if (cachedRecipes) {
+    recipeCache = cachedRecipes;
+    return recipeCache;
+  }
+
   let data;
   try {
     if (window.ZAndwichApi?.fetchJson) {
@@ -137,6 +165,7 @@ async function loadRecipeData() {
     data = await response.json();
   }
   recipeCache = Array.isArray(data) ? data : [];
+  writeCachedArray(RECIPES_CACHE_KEY, recipeCache);
   return recipeCache;
 }
 
@@ -151,13 +180,24 @@ async function loadRecipesForProduct(product) {
     const [recipes, products] = await Promise.all([
       loadRecipeData(),
       (async () => {
+        const cachedProducts = readCachedArray(PRODUCTS_CACHE_KEY);
+        if (cachedProducts) return cachedProducts;
+
+        let data;
         try {
           if (window.ZAndwichApi?.fetchJson) return await window.ZAndwichApi.fetchJson('products');
           const apiRes = await fetch('http://localhost:3000/api/products');
-          if (apiRes.ok) return apiRes.json();
+          if (apiRes.ok) data = await apiRes.json();
         } catch (_) {}
-        const fallbackRes = await fetch('scripts/products.JSON');
-        return fallbackRes.ok ? fallbackRes.json() : [];
+
+        if (!Array.isArray(data)) {
+          const fallbackRes = await fetch('scripts/products.JSON');
+          data = fallbackRes.ok ? await fallbackRes.json() : [];
+        }
+
+        const productsList = Array.isArray(data) ? data : [];
+        writeCachedArray(PRODUCTS_CACHE_KEY, productsList);
+        return productsList;
       })()
     ]);
 

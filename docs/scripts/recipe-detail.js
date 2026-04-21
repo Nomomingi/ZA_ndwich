@@ -1,4 +1,6 @@
 (function () {
+  const RECIPES_CACHE_KEY = 'zandwich-cache-recipes';
+  const PRODUCTS_CACHE_KEY = 'zandwich-cache-products';
 
   function escapeHtml(value) {
     return String(value)
@@ -14,27 +16,64 @@
   }
 
   async function loadRecipes() {
+    const cachedRecipes = readCachedArray(RECIPES_CACHE_KEY);
+    if (cachedRecipes) return cachedRecipes;
+
     try {
       if (window.ZAndwichApi?.fetchJson) return await window.ZAndwichApi.fetchJson('recipes');
       const apiRes = await fetch('http://localhost:3000/api/recipes');
-      if (apiRes.ok) return apiRes.json();
+      if (apiRes.ok) {
+        const data = await apiRes.json();
+        writeCachedArray(RECIPES_CACHE_KEY, data);
+        return data;
+      }
     } catch (_) {}
 
     const response = await fetch('scripts/true_final_recipes.json');
     if (!response.ok) throw new Error('Unable to load recipes.');
-    return response.json();
+    const data = await response.json();
+    writeCachedArray(RECIPES_CACHE_KEY, data);
+    return data;
   }
 
   async function loadProducts() {
+    const cachedProducts = readCachedArray(PRODUCTS_CACHE_KEY);
+    if (cachedProducts) return cachedProducts;
+
     try {
       if (window.ZAndwichApi?.fetchJson) return await window.ZAndwichApi.fetchJson('products');
       const apiRes = await fetch('http://localhost:3000/api/products');
-      if (apiRes.ok) return apiRes.json();
+      if (apiRes.ok) {
+        const data = await apiRes.json();
+        writeCachedArray(PRODUCTS_CACHE_KEY, data);
+        return data;
+      }
     } catch (_) {}
 
     const response = await fetch('scripts/products.JSON');
     if (!response.ok) throw new Error('Unable to load products.');
-    return response.json();
+    const data = await response.json();
+    writeCachedArray(PRODUCTS_CACHE_KEY, data);
+    return data;
+  }
+
+  function readCachedArray(key) {
+    try {
+      const raw = window.localStorage.getItem(key);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function writeCachedArray(key, value) {
+    try {
+      if (Array.isArray(value)) {
+        window.localStorage.setItem(key, JSON.stringify(value));
+      }
+    } catch (_) {}
   }
 
   function setImageErrorState(container) {

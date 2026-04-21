@@ -1,6 +1,7 @@
 (function () {
   const SESSION_KEY = 'zandwich-user-session';
   const DEFAULT_BUDGET_KEY = 'zandwich-default-budget';
+  const LOCAL_USERS_KEY = 'zandwich-local-users';
   const form = document.getElementById('auth-form');
   const modeSelect = document.getElementById('auth-mode');
   const usernameInput = document.getElementById('auth-username');
@@ -63,6 +64,111 @@
     } catch (error) {
       console.error('Could not save preferred budget:', error);
     }
+  }
+
+  function encodePassword(value) {
+    try {
+      return window.btoa(String(value || ''));
+    } catch (error) {
+      return String(value || '');
+    }
+  }
+
+  function normalizeLocalUser(user) {
+    if (!user || !user.username) return null;
+    return {
+      username: String(user.username || ''),
+      password: String(user.password || user.password_base64 || ''),
+      role: String(user.role || 'customer'),
+      phoneNumber: String(user.phoneNumber || user.phone_number || ''),
+      budget: Number(user.budget || 0),
+      addresses: Array.isArray(user.addresses) ? user.addresses : [],
+      orders: Array.isArray(user.orders) ? user.orders : []
+    };
+  }
+
+  function sanitizeSessionUser(user) {
+    return {
+      username: String(user.username || ''),
+      role: String(user.role || 'customer'),
+      phoneNumber: String(user.phoneNumber || ''),
+      budget: Number(user.budget || 0),
+      addresses: Array.isArray(user.addresses) ? user.addresses : [],
+      orders: Array.isArray(user.orders) ? user.orders : []
+    };
+  }
+
+  function readLocalUsersFromStorage() {
+    try {
+      const raw = window.localStorage.getItem(LOCAL_USERS_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.map(normalizeLocalUser).filter(Boolean) : null;
+    } catch (error) {
+      console.error('Could not read local users:', error);
+      return null;
+    }
+  }
+
+  function writeLocalUsersToStorage(users) {
+    try {
+      window.localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
+    } catch (error) {
+      console.error('Could not save local users:', error);
+    }
+  }
+
+  async function loadLocalUsers() {
+    const stored = readLocalUsersFromStorage();
+    if (stored) return stored;
+
+    try {
+      const response = await fetch('scripts/users.json');
+      if (!response.ok) return [];
+      const parsed = await response.json();
+      const users = Array.isArray(parsed) ? parsed.map(normalizeLocalUser).filter(Boolean) : [];
+      if (users.length) writeLocalUsersToStorage(users);
+      return users;
+    } catch (error) {
+      console.error('Could not load local users:', error);
+      return [];
+    }
+  }
+
+  function passwordsMatch(storedPassword, suppliedPassword) {
+    const encoded = encodePassword(suppliedPassword);
+    return String(storedPassword || '') === encoded || String(storedPassword || '') === String(suppliedPassword || '');
+  }
+
+  async function submitLocalAuth(username, password, mode) {
+    const users = await loadLocalUsers();
+    const existing = users.find(user => user.username === username);
+
+    if (mode === 'register') {
+      if (existing) {
+        throw new Error('Username already exists');
+      }
+
+      const created = normalizeLocalUser({
+        username,
+        password: encodePassword(password),
+        role: 'customer',
+        phoneNumber: '',
+        budget: 0,
+        addresses: [],
+        orders: []
+      });
+
+      const nextUsers = [...users, created];
+      writeLocalUsersToStorage(nextUsers);
+      return { message: 'User created', user: sanitizeSessionUser(created) };
+    }
+
+    if (!existing || !passwordsMatch(existing.password, password)) {
+      throw new Error('Invalid credentials');
+    }
+
+    return { message: 'Login successful', user: sanitizeSessionUser(existing) };
   }
 
   function setBudgetMessage(text, isError = false) {
@@ -166,7 +272,10 @@
     setMessage(mode === 'register' ? 'Creating your account...' : 'Checking your details...');
 
     try {
-      const response = window.ZAndwichApi?.requestJson
+      let usedLocalFallback = false;
+      let response;
+      try {
+        response = window.ZAndwichApi?.requestJson
         ? await window.ZAndwichApi.requestJson(endpoint, {
             method: 'POST',
             body: JSON.stringify({ username, password })
@@ -180,18 +289,34 @@
             if (!res.ok) throw new Error(payload.message || 'Request failed');
             return payload;
           });
+      } catch (requestError) {
+        if (!/Failed to fetch|NetworkError|fetch resource/i.test(String(requestError?.message || ''))) {
+          throw requestError;
+        }
+
+        usedLocalFallback = true;
+        response = await submitLocalAuth(username, password, mode);
+        setMessage(mode === 'register'
+          ? 'Account created locally.'
+          : 'Signed in locally.');
+      }
 
       const user = response.user || null;
       if (!user) throw new Error('No user data returned');
 
       writeSession(user);
       renderAccount(user);
-      setMessage(mode === 'register' ? 'Account created. You are signed in.' : 'Login successful.');
+      if (!usedLocalFallback) {
+        setMessage(mode === 'register' ? 'Account created. You are signed in.' : 'Login successful.');
+      }
       setMode('login');
       passwordInput.value = '';
     } catch (error) {
       console.error(error);
-      setMessage(error.message || 'Authentication failed.', true);
+      const message = /Failed to fetch|NetworkError|fetch resource/i.test(String(error?.message || ''))
+        ? 'Could not reach the API. Check that the backend is running and allowed by CORS.'
+        : (error.message || 'Authentication failed.');
+      setMessage(message, true);
     }
   }
 
