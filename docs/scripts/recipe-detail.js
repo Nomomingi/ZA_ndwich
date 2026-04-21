@@ -1,6 +1,7 @@
 (function () {
   const RECIPES_CACHE_KEY = 'zandwich-cache-recipes';
   const PRODUCTS_CACHE_KEY = 'zandwich-cache-products';
+  const FALLBACK_RECIPE_IMAGE = 'media/sandwich-simple-doodle-illustration-vector.jpg';
 
   function escapeHtml(value) {
     return String(value)
@@ -92,7 +93,7 @@
     errorText.classList.remove('is-hidden');
   }
 
-  function hydrateImage(container, imageUrl, imageAlt) {
+  function hydrateImage(container, imageUrl, imageAlt, allowFallback = true) {
     if (!container) return;
     const label = container.querySelector('.product-card-img-label');
 
@@ -111,7 +112,13 @@
       if (errorText) errorText.classList.add('is-hidden');
     });
 
-    img.addEventListener('error', () => setImageErrorState(container));
+    img.addEventListener('error', () => {
+      if (allowFallback && imageUrl !== FALLBACK_RECIPE_IMAGE) {
+        hydrateImage(container, FALLBACK_RECIPE_IMAGE, imageAlt, false);
+        return;
+      }
+      setImageErrorState(container);
+    });
     container.prepend(img);
   }
 
@@ -218,7 +225,7 @@
         <article class="product-card">
           <a href="recipe.html?id=${encodeURIComponent(recipe.id)}" class="product-card-link" aria-label="View ${escapeHtml(recipe.name)}">
             <div class="product-card-img">
-              ${recipe.image ? `<img src="${escapeHtml(recipe.image)}" alt="${escapeHtml(recipe.name)}">` : '<span class="product-card-img-label">[RECIPE]</span>'}
+              ${recipe.image ? `<img src="${escapeHtml(recipe.image)}" alt="${escapeHtml(recipe.name)}" loading="lazy" onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src='${FALLBACK_RECIPE_IMAGE}';}">` : '<span class="product-card-img-label">[RECIPE]</span>'}
             </div>
             <div class="product-card-body">
               <span class="product-card-name">${escapeHtml(recipe.name)}</span>

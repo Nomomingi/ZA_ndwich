@@ -14,8 +14,8 @@
   --rule: #1A1410;
   --card-bg: #FAF7F2;
   --paper-base: #f5efdf;
-  --paper-texture-url-primary: url('Media/pngtree-newspaper-textured-background-with-grunge-and-vintage-elements-in-a-white-image_17281530.jpg');
-  --paper-texture-url-secondary: url('Media/istockphoto-1355531876-612x612.jpg');
+  --paper-texture-url-primary: url('media/pngtree-newspaper-textured-background-with-grunge-and-vintage-elements-in-a-white-image_17281530.jpg');
+  --paper-texture-url-secondary: url('media/istockphoto-1355531876-612x612.jpg');
 }
 
 html { scroll-behavior: smooth; }
@@ -3187,7 +3187,7 @@ main.products-area form.checkout-layout .checkout-submit {
     box-shadow: 10px 10px 0 rgba(26, 20, 16, 0.1);
     background-image:
       linear-gradient(180deg, rgba(0, 0, 0, 0.05) 35%, rgba(0, 0, 0, 0.48) 100%),
-      url('Media/portrait-young-latin-couple-cooking-together-kitchen-home_58466-15643.avif');
+      url('media/portrait-young-latin-couple-cooking-together-kitchen-home_58466-15643.avif');
     background-repeat: no-repeat, no-repeat;
     background-size: cover, cover;
     background-position: 80% 18%, 80% 18%;

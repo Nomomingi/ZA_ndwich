@@ -18,6 +18,7 @@
 
   let recipes = [];
   let products = [];
+  const FALLBACK_RECIPE_IMAGE = 'media/sandwich-simple-doodle-illustration-vector.jpg';
 
   function escapeHtml(value) {
     return String(value)
@@ -178,7 +179,7 @@
       <article class="product-card" data-cost="${estimatedCost}" data-order="${orderIndex}" data-country="${area.toLowerCase()}" data-name="${title.toLowerCase()}" data-category="${category.toLowerCase()}">
         <a href="recipe.html?id=${encodeURIComponent(recipe.id)}" class="product-card-link" aria-label="View ${title}">
           <div class="product-card-img">
-            ${image ? `<img src="${image}" alt="${title}">` : '<span class="product-card-img-label">[RECIPE]</span>'}
+            ${image ? `<img src="${image}" alt="${title}" loading="lazy" onerror="if(!this.dataset.fallbackApplied){this.dataset.fallbackApplied='1';this.src='${FALLBACK_RECIPE_IMAGE}';}">` : '<span class="product-card-img-label">[RECIPE]</span>'}
           </div>
           <div class="product-card-body">
             <span class="product-card-name">${title}</span>
