@@ -50,7 +50,10 @@
 
     if (!response.ok) {
       const message = payload?.message || `API request failed: ${response.status}`;
-      throw new Error(message);
+      const error = new Error(message);
+      error.status = response.status;
+      error.httpStatus = response.status;
+      throw error;
     }
 
     return payload;

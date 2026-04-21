@@ -160,6 +160,10 @@ async function loadRecipeData() {
   }
 
   if (!Array.isArray(data)) {
+    data = null;
+  }
+
+  if (!Array.isArray(data)) {
     const response = await fetch('scripts/true_final_recipes.json');
     if (!response.ok) throw new Error('Could not load recipe data');
     data = await response.json();
@@ -185,10 +189,19 @@ async function loadRecipesForProduct(product) {
 
         let data;
         try {
-          if (window.ZAndwichApi?.fetchJson) return await window.ZAndwichApi.fetchJson('products');
-          const apiRes = await fetch('http://localhost:3000/api/products');
-          if (apiRes.ok) data = await apiRes.json();
+          if (window.ZAndwichApi?.fetchJson) {
+            data = await window.ZAndwichApi.fetchJson('products');
+          }
+
+          if (!Array.isArray(data)) {
+            const apiRes = await fetch('http://localhost:3000/api/products');
+            if (apiRes.ok) data = await apiRes.json();
+          }
         } catch (_) {}
+
+        if (!Array.isArray(data)) {
+          data = null;
+        }
 
         if (!Array.isArray(data)) {
           const fallbackRes = await fetch('scripts/products.JSON');

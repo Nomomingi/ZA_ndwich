@@ -140,6 +140,26 @@
     return String(storedPassword || '') === encoded || String(storedPassword || '') === String(suppliedPassword || '');
   }
 
+  function shouldUseLocalAuthFallback(error) {
+    const message = String(error?.message || '');
+    const lowered = message.toLowerCase();
+    const status = Number(error?.status || error?.httpStatus || 0);
+
+    if (/invalid credentials|username already exists/i.test(message)) {
+      return false;
+    }
+
+    if (status === 400 || status === 401 || status === 409) {
+      return false;
+    }
+
+    if (status >= 500 || status === 404 || status === 403) {
+      return true;
+    }
+
+    return /failed to fetch|networkerror|fetch resource|api request failed|cors|certificate|ssl|timeout/.test(lowered) || !status;
+  }
+
   async function submitLocalAuth(username, password, mode) {
     const users = await loadLocalUsers();
     const existing = users.find(user => user.username === username);
@@ -290,7 +310,7 @@
             return payload;
           });
       } catch (requestError) {
-        if (!/Failed to fetch|NetworkError|fetch resource/i.test(String(requestError?.message || ''))) {
+        if (!shouldUseLocalAuthFallback(requestError)) {
           throw requestError;
         }
 
@@ -313,7 +333,7 @@
       passwordInput.value = '';
     } catch (error) {
       console.error(error);
-      const message = /Failed to fetch|NetworkError|fetch resource/i.test(String(error?.message || ''))
+      const message = shouldUseLocalAuthFallback(error)
         ? 'Could not reach the API. Check that the backend is running and allowed by CORS.'
         : (error.message || 'Authentication failed.');
       setMessage(message, true);
